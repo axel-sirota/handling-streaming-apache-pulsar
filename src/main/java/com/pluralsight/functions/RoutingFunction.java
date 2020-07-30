@@ -3,9 +3,12 @@ package com.pluralsight.functions;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.functions.api.Context;
 import org.apache.pulsar.functions.api.Function;
+import org.apache.pulsar.common.functions.FunctionConfig;
+import org.apache.pulsar.functions.LocalRunner;
 import org.slf4j.Logger;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class RoutingFunction implements Function<String, Void> {
@@ -37,6 +40,18 @@ public class RoutingFunction implements Function<String, Void> {
         }
         return null;
 
+    }
+
+    public static void main(String[] args) throws Exception {
+        FunctionConfig functionConfig = new FunctionConfig();
+        functionConfig.setName("routing-debug");
+        functionConfig.setInputs(Collections.singleton("basket-items"));
+        functionConfig.setClassName(RoutingFunction.class.getName());
+        functionConfig.setRuntime(FunctionConfig.Runtime.JAVA);
+        functionConfig.setOutput("test-output");
+
+        LocalRunner localRunner = LocalRunner.builder().functionConfig(functionConfig).build();
+        localRunner.start(false);
     }
 
 }
