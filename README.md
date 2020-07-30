@@ -42,8 +42,8 @@ tar xvfz Downloads/apache-pulsar-2.6.0-bin.tar.gz
 Apache Pulsar has it's own CLI inside the binary package, so to start the standalone instance (the one we have seen in this course) we just have to run in the Terminal (or Powershell for Windows Users)
 
 ```
-cd apache-pulsar-2.6.0
-bin/pulsar standalone
+export PATH="/Users/axelsirota/apache-pulsar-2.6.0/bin:$PATH"
+pulsar standalone
 ```
 
 And done!
