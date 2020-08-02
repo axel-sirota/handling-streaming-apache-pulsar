@@ -18,6 +18,7 @@ public class AvgFunction implements Function<String, Float> {
 		Logger LOG = context.getLogger();
 		String key = context.getInputTopics().toString().replace("[", "").replace("]", "");
 		int num_measurements = update_measurements(context, key);
+		LOG.info(String.format("The number of measurements is %s", num_measurements));
 		float old_average = get_old_average(context, key);
 		float new_average = (old_average  * (num_measurements-1) + Float.parseFloat(input)) / num_measurements;
 		update_state(context, key, new_average);
@@ -31,18 +32,21 @@ public class AvgFunction implements Function<String, Float> {
 	}
 
 	private float get_old_average(Context context, String key) {
+		Logger LOG = context.getLogger();
 		ByteBuffer old_state = context.getState(key);
 		String old_average = "0";
 		if (old_state != null) {
 			try {
 				old_average = StandardCharsets.UTF_8.decode(old_state).toString();
+				LOG.info(String.format("Got state for key %s and the old average is %s", key, old_average));
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.error(e.getMessage());
 			}
 		}
 		if (old_average.equals("")) {
 			old_average = "0";
 		}
+
 		return Float.parseFloat(old_average);
 	}
 
