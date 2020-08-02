@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 public class AvgFunction implements Function<String, Float> {
@@ -37,7 +36,7 @@ public class AvgFunction implements Function<String, Float> {
 		String old_average = "0";
 		if (old_state != null) {
 			try {
-				old_average = StandardCharsets.UTF_8.decode(old_state).toString();
+				old_average = new String(old_state.array(), charset);
 				LOG.info(String.format("Got state for key %s and the old average is %s", key, old_average));
 			} catch (Exception e) {
 				LOG.error(e.getMessage());
