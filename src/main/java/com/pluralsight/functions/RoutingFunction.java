@@ -1,43 +1,25 @@
 package com.pluralsight.functions;
 
 import org.apache.pulsar.client.api.Schema;
-import org.apache.pulsar.functions.api.Context;
-import org.apache.pulsar.functions.api.Function;
 import org.apache.pulsar.common.functions.FunctionConfig;
 import org.apache.pulsar.functions.LocalRunner;
+import org.apache.pulsar.functions.api.Context;
+import org.apache.pulsar.functions.api.Function;
 import org.slf4j.Logger;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class RoutingFunction implements Function<String, Void> {
-
-    private List fruits = Arrays.asList("apple", "orange", "pear", "other fruits...");
-    private List vegetables = Arrays.asList("carrot", "lettuce", "radish", "other vegetables...");
-
-    private boolean isFruit(String item) {
-        return fruits.contains(item);
-    }
-
-    private boolean isVegetable(String item) {
-        return vegetables.contains(item);
-    }
 
     @Override
     public Void process(String input, Context context) throws Exception {
         Logger LOG = context.getLogger();
         LOG.info(String.format("Got this input: %s", input));
-        if ( isFruit(input) ) {
-            String fruits_topic = "fruits";
-            context.newOutputMessage(fruits_topic, Schema.STRING).value(input).send();
-            } else if ( isVegetable(input) ) {
-            String vegetables_topic = "vegetables";
-            context.newOutputMessage(vegetables_topic, Schema.STRING).value(input).send();
-        } else {
-            String warning = String.format("The item %s is neither a fruit nor a vegetable", input);
-            LOG.warn(warning);
-        }
+		Price inputPrice  = new Price(input);
+	    String topic = String.format("year-%s", inputPrice.getYear());
+	    context.newOutputMessage(topic, Schema.STRING).value(inputPrice.getPrice()).send();
         return null;
 
     }
@@ -45,10 +27,10 @@ public class RoutingFunction implements Function<String, Void> {
     public static void main(String[] args) throws Exception {
         FunctionConfig functionConfig = new FunctionConfig();
         functionConfig.setName("routing-debug");
-        functionConfig.setInputs(Collections.singleton("basket-items"));
+        functionConfig.setInputs(Collections.singleton("voo"));
         functionConfig.setClassName(RoutingFunction.class.getName());
         functionConfig.setRuntime(FunctionConfig.Runtime.JAVA);
-        functionConfig.setOutput("test-output");
+	    functionConfig.setLogTopic("logging-function-logs");
 
         LocalRunner localRunner = LocalRunner.builder().functionConfig(functionConfig).build();
         localRunner.start(false);
@@ -56,3 +38,25 @@ public class RoutingFunction implements Function<String, Void> {
 
 }
 
+class Price {
+	private Date date;
+
+	int getYear() {
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		int year = calendar.get(Calendar.YEAR);
+		return year;
+	}
+
+	String getPrice() {
+		return String.valueOf(price);
+	}
+
+	private float price;
+
+	Price(String priceString) throws ParseException {
+		String[] inputList = priceString.split(",");
+		date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(inputList[0]);
+		price = Float.parseFloat(inputList[1]);
+	}
+}

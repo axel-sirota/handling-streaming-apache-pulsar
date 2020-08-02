@@ -9,9 +9,9 @@ public class Main {
                 .serviceUrl("pulsar://localhost:6650")
                 .build();
         Producer<byte[]> producer = client.newProducer()
-                .topic("basket-items")
+                .topic("voo")
                 .create();
-        String[] messages = new String[]{"apple", "radish", "patri es genial", "%&$#^*&@$"};
+        String[] messages = new String[]{"2010-09-14,90.006", "2011-12-02,101.22", "2012-08-30,115.77", "2012-09-25,119.5", "2014-06-13,165.7"};
 
         // You can then send messages to the broker and topic you specified:
 
@@ -20,52 +20,6 @@ public class Main {
         }
 
         System.out.println("Messages sent!\n");
-
-        Consumer fruitsConsumer = client.newConsumer()
-                .topic("fruits")
-                .subscriptionName("fruits-subscription")
-                .subscribe();
-        Consumer vegetableConsumer = client.newConsumer()
-                .topic("vegetables")
-                .subscriptionName("vegetables-subscription")
-                .subscribe();
-
-        int fruitCount = 0;
-        while (fruitCount < 1) {
-            // Wait for a message
-            Message msg = fruitsConsumer.receive();
-
-            try {
-                // Do something with the message
-                System.out.printf("Message received: %s\n", new String(msg.getData()));
-
-                // Acknowledge the message so that it can be deleted by the message broker
-                fruitsConsumer.acknowledge(msg);
-            } catch (Exception e) {
-                // Message failed to process, redeliver later
-                fruitsConsumer.negativeAcknowledge(msg);
-            }
-            fruitCount++;
-
-        }
-        int vegetableCount = 0;
-        while (vegetableCount  < 1) {
-            // Wait for a message
-            Message msg = vegetableConsumer.receive();
-
-            try {
-                // Do something with the message
-                System.out.printf("Message received: %s\n", new String(msg.getData()));
-
-                // Acknowledge the message so that it can be deleted by the message broker
-                vegetableConsumer.acknowledge(msg);
-            } catch (Exception e) {
-                // Message failed to process, redeliver later
-                vegetableConsumer.negativeAcknowledge(msg);
-            }
-            vegetableCount++;
-
-        }
 
     }
 }
