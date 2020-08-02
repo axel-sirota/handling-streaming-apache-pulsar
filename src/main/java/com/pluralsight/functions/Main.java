@@ -20,6 +20,7 @@ public class Main {
         }
 
         System.out.println("Messages sent!\n");
-
+	    producer.close();
+	    client.close();
     }
 }

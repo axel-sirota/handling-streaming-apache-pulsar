@@ -89,10 +89,19 @@
                             <goal>java</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>default-cli</id>
+                        <configuration>
+                            <mainClass>com.pluralsight.functions.Main</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>second-cli</id>
+                        <configuration>
+                            <mainClass>com.pluralsight.schema.ETFProducer</mainClass>
+                        </configuration>
+                    </execution>
                 </executions>
-                <configuration>
-                    <mainClass>com.pluralsight.functions.Main</mainClass>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
