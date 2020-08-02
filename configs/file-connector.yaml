@@ -1,2 +1,2 @@
 configs:
-  inputDirectory: "/Users/axelsirota/repos/handling-streaming-apache-pulsar/files"
+  inputDirectory: "/tmp/pluralsight-files"
