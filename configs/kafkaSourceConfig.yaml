@@ -1,0 +1,6 @@
+configs:
+  bootstrapServers: "pulsar-kafka:9092"
+  groupId: "test-pulsar-io"
+  topic: "voo"
+  sessionTimeoutMs: "10000"
+  autoCommitEnabled: false

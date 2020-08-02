@@ -1,11 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [[ -z "$pulsar_home" ]]; then
     printf "Please set the $pulsar_home variable"
-    exit 1
-fi
-if [[ -z "$repo_location" ]]; then
-    printf "Please set the $repo_location variable"
     exit 1
 fi
 mkdir -p "$pulsar_home/connectors"
