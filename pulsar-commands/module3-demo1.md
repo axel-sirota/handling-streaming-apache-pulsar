@@ -71,8 +71,10 @@ This is easy! To verify the pulsar functions we can check with `bin/pulsar-admin
 image you may or may not have them. To redeploy them is as easy as:
 
 ```bash
-bin/pulsar-admin functions create --jar ~/repos/handling-streaming-apache-pulsar/target/functions-0.2.0.jar --classname com.pluralsight.functions.RoutingFunction --name routing --inputs "voo" --log-topic logging-function-logs
-for year in 2010 2011 2012 2013 2014 2015 2016 2017; do bin/pulsar-admin functions create --jar ~/repos/handling-streaming-apache-pulsar/target/functions-0.2.0.jar --classname com.pluralsight.functions.AvgFunction --name avg-$year --inputs year-$year --log-topic logging-function-logs --output avg-$year; done
+docker cp target/functions-0.2.0.jar pulsar-kafka-standalone:/pulsar
+docker exec -it pulsar-kafka-standalone /bin/bash
+bin/pulsar-admin functions create --jar ./functions-0.2.0.jar --classname com.pluralsight.functions.RoutingFunction --name routing --inputs "voo" --log-topic logging-function-logs
+for year in 2010 2011 2012 2013 2014 2015 2016 2017; do bin/pulsar-admin functions create --jar ./functions-0.2.0.jar --classname com.pluralsight.functions.AvgFunction --name avg-$year --inputs year-$year --log-topic logging-function-logs --output avg-$year; done
 ```
 
 And the `pulsar-admin` CLI on the sources subcommand it accepts an update flag to resubmit another config file (which is where we defined the Kafka topic)! So we must do:
