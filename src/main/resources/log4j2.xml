@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+
+<!--        <Kafka name="Kafka" topic="log-test">-->
+<!--            <JsonLayout />-->
+<!--            <Property name="bootstrap.servers">localhost:9092</Property>-->
+<!--        </Kafka>-->
+
+        <Kafka name="Kafka" topic="persistent://public/default/log-test">
+            <JsonLayout />
+            <Property name="bootstrap.servers">localhost:6650</Property>
+        </Kafka>
+    </Appenders>
+
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console" />
+        </Root>
+
+        <Logger name="kafka" level="info">
+            <AppenderRef ref="Kafka" />
+        </Logger>
+    </Loggers>
+</Configuration>
