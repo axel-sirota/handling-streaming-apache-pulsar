@@ -18,7 +18,7 @@ We will deploy it to the standalone cluster using:
 ```bash
 pulsar-admin functions create \ 
 --jar target/functions-0.2.0.jar \ 
---classname com.pluralsight.functions.WordCountFunction \
+--classname com.pluralsight.functions.RoutingFunction \
 --name routing \
 --inputs voo
 ```

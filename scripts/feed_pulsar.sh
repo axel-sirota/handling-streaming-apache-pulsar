@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ -z "$pulsar_home" ]]; then
-    printf "Please set the $pulsar_home variable"
+    printf "Please set the $pulsar_home variable to be the installation directory of your pulsar installation"
     exit 1
 fi
 mkdir -p "$pulsar_home/connectors"
