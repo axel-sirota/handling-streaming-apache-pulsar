@@ -5,46 +5,20 @@ import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
 
-import java.text.SimpleDateFormat;
-import java.util.logging.Logger;
-
 public class ETFProducer {
-
-	private static Logger log = Logger.getLogger("logger");
 
 	public static void main(String[] args) throws PulsarClientException {
 
-		PulsarClient client = null;
-		try {
-			client = PulsarClient.builder()
+		PulsarClient client = PulsarClient.builder()
 					                      .serviceUrl("pulsar://localhost:6650")
 					                      .build();
-		} catch (PulsarClientException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		Producer<ETF> producer = null;
-		log.info(new String(Schema.AVRO(ETF.class).getSchemaInfo().getSchema()));
-		try {
-			producer = client.newProducer(Schema.AVRO(ETF.class))
+		Producer<ETF> producer = client.newProducer(Schema.AVRO(ETF.class))
 					                            .topic("pulsar-postgres-jdbc-sink-topic")
 					                            .create();
-		} catch (PulsarClientException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		ETF etfPrice = new ETF("2015-05-26", "151.1564");
-		try {
-			producer.send(etfPrice);
-		} catch (PulsarClientException e) {
-			System.out.println("Messages not sent!");
-			e.printStackTrace();
-		} finally {
-			producer.close();
-			client.close();
-		}
-
+		producer.send(etfPrice);
+		producer.close();
+		client.close();
 		System.out.println("Messages sent!\n");
 	}
 }
