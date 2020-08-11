@@ -9,7 +9,7 @@ enabling a migration (or maintain both if you need) with 0 code change.
 
 ## Setup
 
-What we will review is an application that uses the `log4j` kafka appender to send all application logs into a Kafka topic, 
+What we will review is an application that uses the kafka client to send all application logs into a Kafka topic, 
 and we will migrate that into a Pulsar topic.
 
 The first thing we need is to package our application and send it to the `kafka-pulsar`container:
@@ -17,7 +17,7 @@ The first thing we need is to package our application and send it to the `kafka-
 ```bash
 mvn clean package
 docker cp target/functions-0.2.0-jar-with-dependencies.jar pulsar-kafka:/functions-0.2.0-jar-with-dependencies.jar
-docker cp files voo.txt pulsar-kafka:/
+docker cp files/voo.txt pulsar-kafka:/
 ```
 
 We must send the "fat jar" because we need dependencies to run on its own.
@@ -57,32 +57,14 @@ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic log-test --f
 And we see:
 
 ```
-{
-  "timeMillis" : 1596433071010,
-  "thread" : "main",
-  "level" : "INFO",
-  "loggerName" : "kafka",
-  "message" : "2017-11-09,237.18",
-  "endOfBatch" : false,
-  "loggerFqcn" : "org.apache.logging.slf4j.Log4jLogger",
-  "threadId" : 1,
-  "threadPriority" : 5
-}
-
-{
-  "timeMillis" : 1596433071012,
-  "thread" : "main",
-  "level" : "INFO",
-  "loggerName" : "kafka",
-  "message" : "2017-11-10,237.04",
-  "endOfBatch" : false,
-  "loggerFqcn" : "org.apache.logging.slf4j.Log4jLogger",
-  "threadId" : 1,
-  "threadPriority" : 5
-}
+2017-11-06,237.79
+2017-11-07,237.69
+2017-11-08,238.04
+2017-11-09,237.18
+2017-11-10,237.04
 ```
 
-Success! The key in the application was on the configuration of the `src/main/resources/log4j2.xml` file.
+Success! 
 
 ## Migrating the application
 
@@ -96,7 +78,7 @@ We will change:
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>2.5.0</version>
+            <version>0.10.2.1</version>
         </dependency>
 ```
 
@@ -110,22 +92,18 @@ with
 		</dependency>
 ```
 
-And the Pulsar team has already taken care of all the adapting! On the log handler side, in the file `src/main/resources/log4j2.xml`:
+And the Pulsar team has already taken care of all the adapting! On the `config.properties` file:
 
 ```
-        <Kafka name="Kafka" topic="log-test">
-            <JsonLayout />
-            <Property name="bootstrap.servers">localhost:9092</Property>
-        </Kafka>
+topic=log-test
+broker=http://localhost:9092
 ```
 
 Gets changes to:
 
 ```
-        <Kafka name="Kafka" topic="persistent://public/default/log-test">
-            <JsonLayout />
-            <Property name="bootstrap.servers">localhost:6650</Property>
-        </Kafka>
+topic=log-test
+broker=pulsar://localhost:6650
 ```
 
 And done!!
@@ -134,8 +112,8 @@ Let's test it!!
 
 ```bash
 mvn clean package
-docker cp target/functions-0.2.0-jar-with-dependencies.jar pulsar-kafka-standalone:/functions-0.2.0-jar-with-dependencies.jar
-docker cp files voo.txt pulsar-kafka-standalone:/pulsar
+docker cp target/functions-0.2.0-jar-with-dependencies.jar pulsar-kafka-standalone:/pulsar/functions-0.2.0-jar-with-dependencies.jar
+docker cp files/voo.txt pulsar-kafka-standalone:/pulsar
 ```
 
 Note that it really doesn't matter which container we run this, since localhost is the same for the network
@@ -158,6 +136,13 @@ java -jar functions-0.2.0-jar-with-dependencies.jar
 And we can see on the topic:
 
 ```
+key:[null], properties:[pulsar.partition.id=0], content:2017-11-07,237.69
+----- got message -----
+key:[null], properties:[pulsar.partition.id=0], content:2017-11-08,238.04
+----- got message -----
+key:[null], properties:[pulsar.partition.id=0], content:2017-11-09,237.18
+----- got message -----
+key:[null], properties:[pulsar.partition.id=0], content:2017-11-10,237.04
 ```
 
 Success! It is **that** easy to migrate to Pulsar!! And regarding the kafka-dump, well we know how to do that, since it is just a sink! So we deploy it *no problemo*!

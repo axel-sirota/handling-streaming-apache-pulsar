@@ -5,15 +5,6 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
         </Console>
 
-<!--        <Kafka name="Kafka" topic="log-test">-->
-<!--            <JsonLayout />-->
-<!--            <Property name="bootstrap.servers">localhost:9092</Property>-->
-<!--        </Kafka>-->
-
-        <Kafka name="Kafka" topic="persistent://public/default/log-test">
-            <JsonLayout />
-            <Property name="bootstrap.servers">localhost:6650</Property>
-        </Kafka>
     </Appenders>
 
 
@@ -22,8 +13,5 @@
             <AppenderRef ref="Console" />
         </Root>
 
-        <Logger name="kafka" level="info">
-            <AppenderRef ref="Kafka" />
-        </Logger>
     </Loggers>
 </Configuration>
