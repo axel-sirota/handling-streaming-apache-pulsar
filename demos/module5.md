@@ -28,7 +28,7 @@ We must send the "fat jar" because we need dependencies to run on its own.
 Let's test if this works!
 
 ```bash
-docker exec -it pulsar-kafa /bin/bash
+docker exec -it pulsar-kafka /bin/bash
 mkdir -p /tmp/pluralsight-kafka-migrator
 mv voo.txt /tmp/pluralsight-kafka-migrator
 java -jar functions-0.2.0-jar-with-dependencies.jar
