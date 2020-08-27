@@ -1,5 +1,5 @@
 {
-  "type": "AVRO",
-  "schema": "{\"type\":\"record\",\"name\":\"ETF\",\"fields\":[{\"name\":\"date\",\"type\":[\"string\",\"null\"]},{\"name\":\"price\",\"type\":[\"string\",\"null\"]}]}",
-  "properties": {}
-}
+    "type": "AVRO",
+    "schema": "{\"type\":\"record\",\"name\":\"ETF\",\"fields\":[{\"name\":\"date\",\"type\":[\"string\",\"null\"]},{\"name\":\"price\",\"type\":[\"string\",\"null\"]}]}",
+    "properties": {}
+  }
